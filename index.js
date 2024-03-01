@@ -1,6 +1,6 @@
 require('dotenv').config()
 const mongoose = require("mongoose");
-mongoose.connect("mongodb://127.0.0.1:27017/quix_project");
+mongoose.connect("mongodb+srv://muhammedijas793:HzV4dKexcmKMPH2S@cluster.mdvi0xi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster");
 
 const express = require("express");
 const app = express();

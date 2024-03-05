@@ -7,6 +7,7 @@ const Address = require('../models/addressModel');
 const Order = require('../models/orderModel');
 const Banner = require('../models/bannerModel');
 const Offer = require('../models/offerModel');
+const Coupon = require('...')
  
 const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");
@@ -667,8 +668,17 @@ const userAddAddress = async (req, res) => {
             subTotal += item.productId.prize * item.quantity;
         });
 
+        
+        
 
-        res.render('checkout', { carts: userCart ? userCart.products : [], cartId: userCart._id, subTotal: subTotal, address: userAddress });
+        const coupons = await Coupon.find({
+            minimumSpend: { $lte: subTotal },
+            isActive: true,
+            usageLimit: { $gt: 0 }
+        });
+
+
+        res.render('checkout', { carts: userCart ? userCart.products : [], cartId: userCart._id, subTotal: subTotal, coupons , address: userAddress });
 
 
     } catch (error) {

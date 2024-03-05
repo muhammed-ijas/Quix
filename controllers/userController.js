@@ -7,7 +7,7 @@ const Address = require('../models/addressModel');
 const Order = require('../models/orderModel');
 const Banner = require('../models/bannerModel');
 const Offer = require('../models/offerModel');
-const Coupon = require('...')
+const Coupon = require('../models/couponModel')
  
 const bcrypt = require('bcrypt')
 const nodemailer = require("nodemailer");

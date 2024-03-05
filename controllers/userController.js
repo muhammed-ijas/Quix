@@ -678,7 +678,7 @@ const userAddAddress = async (req, res) => {
         });
 
 
-        res.render('checkout', { carts: userCart ? userCart.products : [], cartId: userCart._id, subTotal: subTotal, coupons , address: userAddress });
+        res.render('checkout', { carts: userCart ? userCart.products : [], cartId: userCart._id, subTotal: subTotal,  coupons: coupons , address: userAddress });
 
 
     } catch (error) {

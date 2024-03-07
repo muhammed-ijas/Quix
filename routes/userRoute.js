@@ -85,6 +85,7 @@ user_route.post('/update-quantity', cartController.updateQuantity);
 
 //checkout
 user_route.post('/toCheckout', orderController.loadCheckout);
+user_route.get('/toCheckout', orderController.loadCheckout);
 user_route.post('/confirmation', orderController.loadConfirmOrder);
 
 //orders

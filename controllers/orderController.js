@@ -122,19 +122,9 @@ const loadConfirmOrder = async (req, res) => {
         //checkout page stock checking
 
         if (invalidProducts.length > 0) {
-            let alertMessage = "Some products in your checkout have quantities exceeding stock limits:\n\n";
-            for (const product of invalidProducts) {
-                alertMessage += `Product: ${product.productId.productName},\n Stock: ${product.productId.stock}, Quantity: ${product.quantity}\n`;
-            }
-            const userAddress = await Address.find({ userId });
-            alertMessage += "\nPlease adjust your cart.";
-            
-            const coupons = await Coupon.find({
-                minimumSpend: { $lte: total }, 
-                isActive: true, 
-                usageLimit: { $gt: 0 } 
-            });
-            res.render('checkout', { carts: userCart ? userCart.products : [], cartId: userCart._id, subTotal: total, address: userAddress, message: alertMessage,coupons: coupons  });
+           
+            res.redirect('/toCheckout')
+        
         } else if (req.body.paymentMethod == 'Wallet' && user.walletAmount < total) {
 
             const userAddress = await Address.find({ userId });

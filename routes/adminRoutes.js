@@ -51,7 +51,7 @@ admin_route.post('/adminVerifyLogin',adminController.adminVerifyLogin)
 admin_route.get('/adminHome',authMiddleware.checkIsAdmin,adminController.loadHome);
 
 admin_route.get('/loadUsers',authMiddleware.checkIsAdmin,adminController.loadUsers);
-admin_route.post('/adminBlockUser',adminController.adminBlockUser);
+admin_route.post('/adminBlockUser',authMiddleware.checkIsAdmin,adminController.adminBlockUser);
 
 admin_route.get('/forgetPassAdmin',adminController.adminLoadForget);
 admin_route.post('/adminForgetPass',adminController.adminforgetPass);
@@ -71,7 +71,7 @@ admin_route.post('/adminInsertProduct', upload.array('image', 3), productControl
 admin_route.post('/adminListProduct',authMiddleware.checkIsAdmin,productController.adminListProduct);
 
 admin_route.post('/adminEditProductLoad',productController.adminEditProductLoad);
-admin_route.post('/adminSaveProduct',upload.array('image', 3),productController.adminSaveProduct)
+admin_route.post('/adminSaveProduct',authMiddleware.checkIsAdmin,upload.array('image', 3),productController.adminSaveProduct)
 
 
 admin_route.get('/download-pdf',authMiddleware.checkIsAdmin,adminController.downloadPdf)
@@ -79,17 +79,17 @@ admin_route.get('/download-pdf',authMiddleware.checkIsAdmin,adminController.down
 
 admin_route.get('/loadOrders',authMiddleware.checkIsAdmin, orderController.adminLoadOrder);
 admin_route.post('/adminViewSingleOrder',authMiddleware.checkIsAdmin,orderController.adminViewSingleOrder);
-admin_route.put('/updateOrderStatus/:orderId/:productId', orderController.updateOrderStatus);
+admin_route.put('/updateOrderStatus/:orderId/:productId',authMiddleware.checkIsAdmin, orderController.updateOrderStatus);
 
 
-admin_route.get('/api/payment-methods', adminController.doughnutChart);
-admin_route.get('/api/income',adminController.pastIncomes);
+admin_route.get('/api/payment-methods',authMiddleware.checkIsAdmin, adminController.doughnutChart);
+admin_route.get('/api/income',authMiddleware.checkIsAdmin,adminController.pastIncomes);
 
 // admin_route.get('/addProduct',productController.insertProduct);
 
 //sales report
 
-admin_route.post('/api/sales-report', adminController.fetchSalesReport);
+admin_route.post('/api/sales-report',authMiddleware.checkIsAdmin, adminController.fetchSalesReport);
 
 
 

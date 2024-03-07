@@ -112,16 +112,27 @@ const removeFromCart = async(req,res)=>{
 
         const existprod = userCart.products.findIndex(product => product.productId.toString() === productId);
 
-        if ( existprod === -1) {
-            return res.status(404).json({ error: 'Product not found in the cart' });
-        }
+      
 
         userCart.products.splice(existprod, 1);
         userCart.updatedAt = Date.now();
         await userCart.save();
 
+        const cartTotal = await Cart.findById( cartId).populate('products.productId');
+
+      
+
+       
+  
+       
+  
+        let grandTotalPrice = 0;
+        cartTotal.products.forEach(product => {
+            grandTotalPrice += product.quantity * (product.productId.offerName ? product.productId.offerPrice : product.productId.prize);
+        });
+
      
-        res.status(200).json({ message: 'Product removed from the cart successfully' });
+        res.json({ grandTotalPrice });
       
    } catch (error) {
       console.error(error);

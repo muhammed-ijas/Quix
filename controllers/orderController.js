@@ -87,17 +87,18 @@ const loadConfirmOrder = async (req, res) => {
             couponMinimumSpend = req.body.appliedCouponMinimumSpend;
         }
 
-
         for (const cartProduct of userCart.products) {
             const product = await Product.findById(cartProduct.productId);
 
             if (product && product.stock >= cartProduct.quantity) {
-                product.stock -= cartProduct.quantity;
-                await product.save();
+                
             } else {
                 invalidProducts.push(cartProduct);
             }
         }
+
+
+       
 
 
         let subtotal = 0;
@@ -123,6 +124,8 @@ const loadConfirmOrder = async (req, res) => {
 
         if (invalidProducts.length > 0) {
            
+
+           
             res.redirect('/toCheckout')
         
         } else if (req.body.paymentMethod == 'Wallet' && user.walletAmount < total) {
@@ -137,6 +140,14 @@ const loadConfirmOrder = async (req, res) => {
             res.render('checkout', { carts: userCart ? userCart.products : [], cartId: userCart._id, subTotal: total, address: userAddress, message: alertMessage,coupons: coupons  });
 
         } else if (req.body.paymentMethod == 'Wallet' && user.walletAmount >= total) {
+            for (const cartProduct of userCart.products) {
+                const product = await Product.findById(cartProduct.productId);
+    
+                if (product && product.stock >= cartProduct.quantity) {
+                    product.stock -= cartProduct.quantity;
+                    await product.save();
+                } 
+            }
 
 
 
@@ -208,6 +219,16 @@ const loadConfirmOrder = async (req, res) => {
 
         } else {
 
+            for (const cartProduct of userCart.products) {
+                const product = await Product.findById(cartProduct.productId);
+    
+                if (product && product.stock >= cartProduct.quantity) {
+                    product.stock -= cartProduct.quantity;
+                    await product.save();
+                } else {
+                    invalidProducts.push(cartProduct);
+                }
+            }
 
 
 

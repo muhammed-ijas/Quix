@@ -88,6 +88,7 @@ user_route.post('/toCheckout', orderController.loadCheckout);
 user_route.get('/toCheckout', orderController.loadCheckout);
 user_route.post('/confirmation', orderController.loadConfirmOrder);
 
+
 //orders
 user_route.get('/viewOrders',authMiddleware.isLogin,  orderController.loadviewOrder);
 user_route.get('/viewSingleOrder/:orderId',authMiddleware.isLogin,  orderController.loadViewSingleOrder);

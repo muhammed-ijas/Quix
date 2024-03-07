@@ -20,10 +20,13 @@ const cartSchema = new mongoose.Schema({
             },
             offerTotal:{
                 type : Number,
-            }
+            },
+            unitPrice: {
+                type: Number,
+            },
         }
     ],
-
+    
     createdAt: {
         type: Date,
         default: Date.now,

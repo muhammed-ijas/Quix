@@ -372,7 +372,7 @@ input[type='number']::-webkit-outer-spin-button {
 														<% } %>	
 
 														<% grandTotalPrice += totalprice %>
-                											<td>&#8377;<%= totalprice %></td>
+														<td class="showTotal" id="totalPrice_<%= i %>">&#8377;<%= totalprice %></td>
 															
 															<td>
 																<form method="POST" class="remove-form">
@@ -778,103 +778,7 @@ input[type='number']::-webkit-outer-spin-button {
 		<script src="assets/js/minicart.js"></script>
 
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-		<script>
-			document.addEventListener('DOMContentLoaded', function () {
-				const updateQuantityForms = document.querySelectorAll('.update-quantity-form');
-				
 		
-				updateQuantityForms.forEach(form => {
-					const minusBtn = form.querySelector('.btn-minus');
-					const plusBtn = form.querySelector('.btn-plus');
-					const quantityInput = form.querySelector('[name="quantity"]');
-					const totalPriceCell = form.closest('tr').querySelector('.total-price');
-					const grandTotalCell = document.getElementById('showGrandTotal');
-
-		
-					minusBtn.addEventListener('click', function () {
-						updateQuantity(quantityInput, -1);
-						window.location.reload(true);
-						
-					});
-		
-					plusBtn.addEventListener('click', function () {
-						updateQuantity(quantityInput, 1);
-						window.location.reload(true);
-						
-					});
-				});
-		
-				async function updateQuantity(inputElement, change) {
-					let newQuantity = parseInt(inputElement.value) + change;
-		
-					
-					newQuantity = Math.max(1, Math.min(newQuantity, 10));
-		
-					inputElement.value = newQuantity;
-					
-					
-					const cartId = inputElement.form.querySelector('[name="cartId"]').value;
-					const productId = inputElement.form.querySelector('[name="productId"]').value;
-		
-					try {
-						const response = await fetch(`/update-quantity`, {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({
-								cartId,
-								productId,
-								quantity: newQuantity,
-								
-							}),
-						});
-		
-						if (!response.ok) {
-							
-							console.error('Error updating quantity');
-						} else {
-							// Recalculate and update total prices
-							updateTotalPrices();
-						}
-					} catch (error) {
-						console.error('Fetch error:', error);
-					}
-				}
-		
-				function updateTotalPrices() {
-					const rows = document.querySelectorAll('.update-quantity-form');
-					let grandTotal = 0;
-		
-					rows.forEach(row => {
-						const quantity = parseInt(row.querySelector('[name="quantity"]').value);
-						const price = parseFloat(row.querySelector('[name="price"]').textContent);
-						const total = quantity * price;
-		
-						row.querySelector('.total-price').textContent = total.toFixed(2);
-		
-						grandTotal += total;
-					});
-		
-					grandTotalCell.textContent = grandTotal.toFixed(2);
-				}
-			});
-		
-			function totalPrice(carts) {
-				let total = 0;
-				for (let i = 0; i < carts.length; i++) {
-					total = total + (carts[i].products.quantity * carts[i].products.prize)
-				}
-				
-				return total;
-			}
-		
-			window.addEventListener('load', () => {
-				let price = totalPrice();
-				let totalpriceField = document.getElementById('showTotalPrice');
-				totalpriceField.innerHTML = price;
-			});
-		</script>
 		
 
 		<script>
@@ -1019,6 +923,73 @@ input[type='number']::-webkit-outer-spin-button {
 
 		<script src="assets/js/bootstrap.js"></script>
 		<!-- js file -->
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+    const updateQuantityForms = document.querySelectorAll('.update-quantity-form');
+
+    updateQuantityForms.forEach(form => {
+        const minusBtn = form.querySelector('.btn-minus');
+        const plusBtn = form.querySelector('.btn-plus');
+        const quantityInput = form.querySelector('[name="quantity"]');
+        const grandTotalCell = document.getElementById('showGrandTotal');
+
+        minusBtn.addEventListener('click', function () {
+            updateQuantity(quantityInput, -1);
+        });
+
+        plusBtn.addEventListener('click', function () {
+            updateQuantity(quantityInput, 1);
+        });
+    });
+
+    async function updateQuantity(inputElement, change) {
+        let newQuantity = parseInt(inputElement.value) + change;
+        newQuantity = Math.max(1, Math.min(newQuantity, 10));
+        inputElement.value = newQuantity;
+
+        const cartId = inputElement.form.querySelector('[name="cartId"]').value;
+        const productId = inputElement.form.querySelector('[name="productId"]').value;
+
+        try {
+            const response = await fetch(`/update-quantity`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    cartId,
+                    productId,
+                    quantity: newQuantity,
+                }),
+            });
+
+            if (!response.ok) {
+                console.error('Error updating quantity');
+            } else {
+                const data = await response.json();
+                updateGrandTotalPrices(data.grandTotalPrice);
+				
+				updateTotalPrice(data.index,data.totalPrice)
+
+				
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+        }
+    }
+
+    function updateGrandTotalPrices(grandTotalPrice) {
+        const grandTotalCell = document.getElementById('showGrandTotal');
+        grandTotalCell.textContent = `Subtotal : ₹${grandTotalPrice}`;
+    }
+	function updateTotalPrice(productIndex, totalPrice) {
+    const totalCell = document.getElementById(`totalPrice_${productIndex}`);
+    totalCell.textContent = `₹${totalPrice}`;
+}
+});
+
+		</script>
 </body>
 
 </html>

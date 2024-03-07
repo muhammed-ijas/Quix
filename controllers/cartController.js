@@ -131,37 +131,61 @@ const removeFromCart = async(req,res)=>{
 
 
 
-
-
 const updateQuantity = async (req, res) => {
-    try {
-      const { cartId, productId, quantity } = req.body;
+  try {
 
-      const product = await Product.find({_id:productId});
+    console.log(req.body);
+      const { cartId, productId, quantity } = req.body;
+      const product = await Product.findOne({ _id: productId });
 
       
+
       const updatedCart = await Cart.findOneAndUpdate(
-        { _id: cartId, 'products.productId': productId },
-        { $set: { 'products.$.quantity': quantity } },
-        { new: true }
+          { _id: cartId, 'products.productId': productId },
+          { $set: { 'products.$.quantity': quantity } },
+          { new: true }
       );
-  
-      // Calculate total price and grand total price
+
+
+     
+
+      const userCart = await Cart.findById( cartId).populate('products.productId');
+
+      
+
+      let index = -1; // Initialize index with -1 to indicate product not found initially
+
+for (let i = 0; i < userCart.products.length; i++) {
+    if (userCart.products[i].productId._id == productId) {
+      console.log(userCart.products[i].productId._id);
+         index = i ;
+         break;
+    }
+}
+
+console.log(index);
+
+     
+
       let grandTotalPrice = 0;
-      updatedCart.products.forEach(product => {
-        grandTotalPrice += product.quantity * product.productId.prize;
+      userCart.products.forEach(product => {
+          grandTotalPrice += product.quantity * (product.productId.offerName ? product.productId.offerPrice : product.productId.prize);
       });
-  
-  
-      // Send updated data back to the client
-      res.json({ updatedCart, grandTotalPrice });
-    } catch (error) {
+
+
+      const  totalPrice = quantity * (product.offerName ? product.offerPrice : product.prize); 
+      
+    
+      
+
+
+
+      res.json({ grandTotalPrice ,totalPrice ,index});
+  } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
-
-
+  }
+};
 
 
 

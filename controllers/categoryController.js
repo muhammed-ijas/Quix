@@ -81,7 +81,7 @@ const adminupdateCategory = async (req, res) => {
         category.is_listed = !category.is_listed;
         await category.save();
         
-        res.status(200).json({ isListed: category.is_listed }); // Send the updated category state back to the client
+        res.status(200).json({ isListed: category.is_listed }); 
     } catch (error) {
         console.error('Error updating category:', error);
         res.status(500).json({ error: 'An error occurred while updating the category status' });

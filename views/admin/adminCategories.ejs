@@ -406,17 +406,12 @@
 
 
                               <td>
-                                <!-- <form method="POST" action="/updateCategory"> -->
-                                <!-- <input type="hidden" name="categoryId" value="<%= categories[i]._id %>"> -->
-                                <!-- <button type="submit" class="btn btn-primary">
-                                                    <%= categories[i].is_listed ? 'List' : 'Unlist' %>
-                                                </button> -->
+                               
                                 <button id="categoryButton<%= i %>"
                                   onclick="listCategory('<%= categories[i]._id %>','<%= i %>')" class="btn btn-primary">
-                                  <%= categories[i].is_listed ? 'List' : 'unlist' %> <!-- Initial button text -->
+                                  <%= categories[i].is_listed ? 'List' : 'unlist' %> 
                                 </button>
-                                <!-- 
-                                </form> -->
+                               
                               </td>
 
                             </tr>

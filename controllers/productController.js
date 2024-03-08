@@ -106,20 +106,14 @@ const adminInsertProduct = async (req,res)=>{
 
 const adminListProduct = async (req, res) => {
 
-    const productId = req.body.productId;
+    
 
     try {
+        const productId = req.body.productId;
         const product = await Product.findById(productId);
         product.is_listed = !product.is_listed;
         await product.save();
-        const allProducts = await Product.find({});
-
-        const allCategories = await Category.find({ is_listed: 0 });
-
-        const activeOffers = await Offer.find({ expiryDate: { $gte: new Date() } });
-
-       
-        res.render('adminProducts',{products:allProducts,categories:allCategories,offers:activeOffers}); 
+       res.status(200).json({isListed: product.is_listed })
     } catch (error) {
         console.error(error.message);
        

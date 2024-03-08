@@ -96,29 +96,9 @@ const adminDeleteCoupon = async (req, res) => {
 
         const couponId = req.body.couponId;
 
-        // const coupon = await Coupon.findOne({_id:couponId});
-        // const couponName =  coupon.couponName;
+   
 
         await Coupon.findByIdAndDelete(couponId);
-
-
-
-
-        // const productsWithOffer = await Product.find({ offerName: offerName });
-
-        // if (productsWithOffer.length > 0) {
-
-        //     await Product.updateMany({ offerName: offerName }, {
-        //         $unset: {
-        //             offerPrice: "",
-        //             offerPercentage: "",
-        //             offerName: ""
-        //         }
-        //     });
-        // }
-
-
-
 
 
 

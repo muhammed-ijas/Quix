@@ -64,14 +64,14 @@ admin_route.get('/loadAddCategories',authMiddleware.checkIsAdmin,categoryControl
 admin_route.post('/adminInsertCategory',authMiddleware.checkIsAdmin,categoryController.adminInsertCategory);
 admin_route.post('/updateCategory',authMiddleware.checkIsAdmin,categoryController.adminupdateCategory);
 
-
+//products
 admin_route.get('/loadProducts',authMiddleware.checkIsAdmin,productController.adminLoadProducts);
 admin_route.get('/addProduct' , authMiddleware.checkIsAdmin,productController.adminLoadAddProduct);
 admin_route.post('/adminInsertProduct', upload.array('image', 3), productController.adminInsertProduct);
 admin_route.post('/adminListProduct',authMiddleware.checkIsAdmin,productController.adminListProduct);
-
 admin_route.post('/adminEditProductLoad',productController.adminEditProductLoad);
-admin_route.post('/adminSaveProduct',authMiddleware.checkIsAdmin,upload.array('image', 3),productController.adminSaveProduct)
+
+admin_route.post('/adminSaveProduct', authMiddleware.checkIsAdmin, upload.array('newImage', 3), productController.adminSaveProduct);
 
 
 admin_route.get('/download-pdf',authMiddleware.checkIsAdmin,adminController.downloadPdf)

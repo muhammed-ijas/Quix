@@ -74,25 +74,19 @@ const adminInsertCategory = async (req, res) => {
 
 
 
-
 const adminupdateCategory = async (req, res) => {
-
-    const categoryId = req.body.categoryId;
-
     try {
+        const categoryId = req.body.categoryId;
         const category = await Category.findById(categoryId);
         category.is_listed = !category.is_listed;
         await category.save();
-        const allCategories = await Category.find({});
-
-        res.render('adminCategories', { categories: allCategories });
+        
+        res.status(200).json({ isListed: category.is_listed }); // Send the updated category state back to the client
     } catch (error) {
         console.error('Error updating category:', error);
-
+        res.status(500).json({ error: 'An error occurred while updating the category status' });
     }
 };
-
-
 
 
 module.exports = {

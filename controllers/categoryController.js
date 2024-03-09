@@ -74,19 +74,28 @@ const adminInsertCategory = async (req, res) => {
 
 
 
-const adminupdateCategory = async (req, res) => {
-    try {
-        const categoryId = req.body.categoryId;
-        const category = await Category.findById(categoryId);
-        category.is_listed = !category.is_listed;
-        await category.save();
+    const adminupdateCategory = async (req, res) => {
+        try {
+            const categoryId = req.body.categoryId;
+            const category = await Category.findById(categoryId);
+           
+            
+              // Update the is_listed status of associated products
+        const products = await Product.find({ categoryName: category.categoryName });
+        if (products.length > 0) {
+            const updatedIsListedStatus = !category.is_listed ? 1 : 0; 
+            await Product.updateMany({ categoryName: category.categoryName }, { $set: { is_listed: updatedIsListedStatus } });
+        }
+            category.is_listed = !category.is_listed;
         
-        res.status(200).json({ isListed: category.is_listed }); 
-    } catch (error) {
-        console.error('Error updating category:', error);
-        res.status(500).json({ error: 'An error occurred while updating the category status' });
-    }
-};
+            await category.save();
+            
+            res.status(200).json({ isListed: category.is_listed }); 
+        } catch (error) {
+            console.error('Error updating category:', error);
+            res.status(500).json({ error: 'An error occurred while updating the category status' });
+        }
+    };
 
 
 module.exports = {

@@ -98,6 +98,7 @@ const adminInsertCategory = async (req, res) => {
     };
 
 
+    
 module.exports = {
     adminLoadCategories,
     loadAddCategories,

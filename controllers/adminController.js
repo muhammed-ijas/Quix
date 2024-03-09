@@ -377,8 +377,12 @@ const searchProducts = async(req,res)=>{
           { categoryName: { $regex: search, $options: 'i' } } 
         ]
       });
+
+      const activeOffers = await Offer.find({ expiryDate: { $gte: new Date() } });
+
+    
         
-      res.render('adminProducts',{products:products});
+      res.render('adminProducts',{products:products ,offers :activeOffers});
 
 
     } catch (error) {

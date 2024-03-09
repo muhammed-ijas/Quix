@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="adminAssets/corona-free-dark-bootstrap-admin-template-1.0.0/template/assets/css/style.css">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="adminAssets/corona-free-dark-bootstrap-admin-template-1.0.0/template/assets/images/favicon.png" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/jquery.dataTables.min.css">
   </head>
   <body>
     <div class=" container-scroller">
@@ -355,7 +356,7 @@
                       
                       </p>
                       <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table class="table table-striped" id="dataTable">
                           <thead>
                             <tr>
                               <th> # </th>
@@ -370,7 +371,7 @@
                           <tbody>
                             <% if(orders.length > 0) { %>
                                 <% for(let i=0; i < orders.length; i++) { %>
-                                    <tr>
+                                    <tr style="height: 60px;">
                                         <td><%= i+1 %></td>
                                         <td><%= orders[i]._id  %></td>
                                         <td><%= orders[i].subTotal %></td>
@@ -418,5 +419,17 @@
     <!-- endinject -->
     <!-- Custom js for this page -->
     <!-- End custom js for this page -->
+
+    
+  <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
+
+  <script type="text/javascript" charset="utf8"
+    src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#dataTable').DataTable();
+    });
+  </script>
+
   </body>
 </html>

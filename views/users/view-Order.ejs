@@ -427,7 +427,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								<div class="container">
 									<div class="row justify-content-center">
 										<div class="col-md-8 text-center">
-											<h5 class="subtotal">Subtotal: <%= order.subTotal.toFixed(2)%>
+											<h5 id="subtotal" class="subtotal">Subtotal: <%= order.subTotal.toFixed(2)%>
 											</h5>
 										</div>
 									</div>
@@ -712,22 +712,21 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					return response.json();
 				})
 				.then(data => {
-					// Handle success response
+					
 					console.log(data);
 
-					// Change the button to "Cancelled"
+					
 					const actionCell = document.getElementById('action_' + productId);
 					if (actionCell) {
 						actionCell.innerHTML = 'Cancelled';
 					}
 
-					// Update the subtotal
+			
 					const subtotalElement = document.getElementById('subtotal');
-					if (subtotalElement) {
-						subtotalElement.innerText = 'Subtotal: ' + data.subTotal; // Assuming data.subTotal is the updated subtotal
-					}
+					subtotalElement.innerText = 'Subtotal: ' + data.subTotal; 
+					
 
-					// Show SweetAlert notification
+					
 
 
 					Swal.fire({
@@ -737,17 +736,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						timer: 1000,
 						showConfirmButton: false
 					});
-					setTimeout(() => {
-						window.location.reload();
-					}, 1000); // Adjust the delay time as needed
+					
 
 
 				})
 				.catch(error => {
-					// Handle error
 					console.error('Error:', error);
-					// Optionally, display an error message to the user
-					// Show SweetAlert error notification
 					Swal.fire({
 						title: 'Error!',
 						text: 'Failed to cancel product. Please try again later.',

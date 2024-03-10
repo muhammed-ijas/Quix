@@ -27,9 +27,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 	<style>
-		
-
-
 		.return-button {
 			background-color: rgb(206, 57, 57);
 			color: white;
@@ -348,19 +345,23 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 													</td>
 													<td>
 														<%= order.products[i].productId.productName %>
-														<% if (order.products[i].status === "delivered") { %>
-															<% if (order.products[i].hasReviewed) { %>
-																<div>Thank you for your review!</div>
-															<% } else { %>
-																<div>
-																	<form action="/loadReview" method="post">
-																		<input type="hidden" name="productId" value="<%= order.products[i].productId._id %>">
-																		<input type="hidden" name="orderId" value="<%= orderId %>">
-																		<button type="submit" class="btn btn-dark">Add Rating and review</button>
-																	</form>
-																</div>
-															<% } %>
-														<% } %>
+															<% if (order.products[i].status==="delivered" ) { %>
+																<% if (order.products[i].hasReviewed) { %>
+																	<div>Thank you for your review!</div>
+																	<% } else { %>
+																		<div>
+																			<form action="/loadReview" method="post">
+																				<input type="hidden" name="productId"
+																					value="<%= order.products[i].productId._id %>">
+																				<input type="hidden" name="orderId"
+																					value="<%= orderId %>">
+																				<button type="submit"
+																					class="btn btn-dark">Add Rating and
+																					review</button>
+																			</form>
+																		</div>
+																		<% } %>
+																			<% } %>
 													</td>
 													<td>
 														<%= order.products[i].quantity %>
@@ -694,61 +695,74 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 	<script>
 		function cancelProduct(productId, orderId, userId) {
 
-			fetch('/userCancelOrder', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					productId: productId,
-					orderId: orderId,
-					userId: userId
-				})
+			Swal.fire({
+				title: 'Are you sure?',
+				text: 'This action cannot be undone!',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#d33',
+				cancelButtonColor: '#3085d6',
+				confirmButtonText: 'Yes, cancel it!'
+			}).then((result) => {
+				if (result.isConfirmed) {
+
+					fetch('/userCancelOrder', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify({
+							productId: productId,
+							orderId: orderId,
+							userId: userId
+						})
+					})
+						.then(response => {
+							if (!response.ok) {
+								throw new Error('Failed to cancel order');
+							}
+							return response.json();
+						})
+						.then(data => {
+
+							console.log(data);
+
+
+							const actionCell = document.getElementById('action_' + productId);
+							if (actionCell) {
+								actionCell.innerHTML = 'Cancelled';
+							}
+
+
+							const subtotalElement = document.getElementById('subtotal');
+							subtotalElement.innerText = 'Subtotal: ' + data.subTotal;
+
+
+
+
+
+							Swal.fire({
+								icon: 'success',
+								title: 'Success!',
+								text: 'Product cancelled successfully',
+								timer: 1000,
+								showConfirmButton: false
+							});
+
+
+
+						})
+						.catch(error => {
+							console.error('Error:', error);
+							Swal.fire({
+								title: 'Error!',
+								text: 'Failed to cancel product. Please try again later.',
+								icon: 'error',
+								confirmButtonText: 'OK'
+							});
+						});
+				}
 			})
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Failed to cancel order');
-					}
-					return response.json();
-				})
-				.then(data => {
-					
-					console.log(data);
-
-					
-					const actionCell = document.getElementById('action_' + productId);
-					if (actionCell) {
-						actionCell.innerHTML = 'Cancelled';
-					}
-
-			
-					const subtotalElement = document.getElementById('subtotal');
-					subtotalElement.innerText = 'Subtotal: ' + data.subTotal; 
-					
-
-					
-
-
-					Swal.fire({
-						icon: 'success',
-						title: 'Success!',
-						text: 'Product cancelled successfully',
-						timer: 1000,
-						showConfirmButton: false
-					});
-					
-
-
-				})
-				.catch(error => {
-					console.error('Error:', error);
-					Swal.fire({
-						title: 'Error!',
-						text: 'Failed to cancel product. Please try again later.',
-						icon: 'error',
-						confirmButtonText: 'OK'
-					});
-				});
 		}
 	</script>
 	<!-- newsletter modal -->

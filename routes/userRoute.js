@@ -1,9 +1,23 @@
 const express = require("express");
 const user_route = express();
 const session = require("express-session");
+const MongoStore = require("connect-mongo");
+
 
 const config = require("../config/config");
-user_route.use(session({ secret: config.sessionSecret, resave: false, saveUninitialized: true }));
+
+// user_route.use(session({ secret: config.sessionSecret, resave: false, saveUninitialized: true }));
+
+user_route.use(session({
+    secret: config.sessionSecret ,
+    resave: false, // Don't resave session if not modified
+    saveUninitialized: true, // Save session even if it's not modified
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URI, // Your MongoDB URI
+        ttl: 14 * 24 * 60 * 60 // 14 days session expiration time
+    }),
+    cookie: { secure: false } // Set to true if you're using HTTPS
+}));
 
 user_route.set('view engine', 'ejs')
 user_route.set('views', './views/users');

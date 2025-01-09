@@ -68,6 +68,7 @@ const changePassword = async (req, res) => {
     }
 }
 
+
 const loadRegister = async (req, res) => {
 
     try {
@@ -82,6 +83,7 @@ const loadRegister = async (req, res) => {
     }
 
 }
+
 
 
 
@@ -125,15 +127,60 @@ const sendOTP = async (name, email, otp) => {
 
 
 
-const insertUser = async (req, res) => {
-    try {
+// const insertUser = async (req, res) => {
+//     try {
         
 
+//         const existingUser = await User.findOne({ email: req.body.email });
+
+//         if (existingUser) {
+//             return res.render('registration', { message: 'Email is already in use. Please choose a different email.' });
+//         }
+//         const spassword = await securePassword(req.body.password);
+
+//         let userParams = {
+//             name: req.body.name,
+//             email: req.body.email,
+//             phone: req.body.phone,
+//             password: spassword,
+//             is_admin: false,
+//             is_blocked: 0
+//         };
+        
+//         if (req.body.referralCode) {
+//             userParams.referredFrom = req.body.referralCode;
+//         }
+        
+//         const user = new User(userParams);
+//         req.session.users = user;
+
+//         if (req.session.users) {
+//             const { otp, expiration } = generateOTP();
+//             req.session.otp = otp;
+//             req.session.otpExpiration = expiration;
+
+//             sendOTP(req.body.name, req.body.email, otp);
+//             res.render('OTPregister', { id: req.session.users._id });
+//         } else {
+//             res.render('registration', { message: 'Your registration has been failed' });
+//         }
+
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// };
+const insertUser = async (req, res) => {
+    try {
         const existingUser = await User.findOne({ email: req.body.email });
+        let referralCode = req.body.referralCode || '';
 
         if (existingUser) {
-            return res.render('registration', { message: 'Email is already in use. Please choose a different email.' });
+            return res.render('registration', { 
+                message: 'Email is already in use. Please choose a different email.',
+                referralCode: referralCode // pass referralCode if it exists
+            });
         }
+
         const spassword = await securePassword(req.body.password);
 
         let userParams = {
@@ -144,27 +191,35 @@ const insertUser = async (req, res) => {
             is_admin: false,
             is_blocked: 0
         };
-        
-        if (req.body.referralCode) {
-            userParams.referredFrom = req.body.referralCode;
+
+        if (referralCode) {
+            userParams.referredFrom = referralCode;
         }
-        
+
         const user = new User(userParams);
         req.session.users = user;
 
         if (req.session.users) {
             const { otp, expiration } = generateOTP();
+            console.log(otp);
+            
             req.session.otp = otp;
             req.session.otpExpiration = expiration;
 
             sendOTP(req.body.name, req.body.email, otp);
             res.render('OTPregister', { id: req.session.users._id });
         } else {
-            res.render('registration', { message: 'Your registration has been failed' });
+            res.render('registration', { 
+                message: 'Your registration has failed',
+                referralCode: referralCode // pass referralCode if it exists
+            });
         }
-
     } catch (error) {
         console.log(error.message);
+        res.render('registration', { 
+            message: 'An error occurred during registration. Please try again.',
+            referralCode: req.body.referralCode || '' // pass referralCode if it exists
+        });
     }
 };
 

@@ -2,10 +2,28 @@ const express =  require("express");
 const admin_route = express();
 const session = require("express-session");
 const multer = require('multer');
+const MongoStore = require("connect-mongo"); // Import MongoStore
+
+
 
 
 const config = require("../config/config");
-admin_route.use(session({secret:config.sessionSecret}));
+
+// admin_route.use(session({secret:config.sessionSecret}));
+
+admin_route.use(
+    session({
+      secret: config.sessionSecret,
+      resave: false, // Avoid resaving session on each request
+      saveUninitialized: true, ////  Save sessions that are uninitialized
+      store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URI, // MongoDB URI from .env file
+        ttl: 14 * 24 * 60 * 60, // 14 days session expiration time
+      }),
+      cookie: { secure: false } // Se
+    })
+  );
+
 //Nocache
 const nocache = require("nocache");
 admin_route.use(nocache());
